@@ -20,6 +20,10 @@ Click a table from the **left sidebar** and its data appears on the **right side
 
 The **Table Data / SQL Code** tabs let you switch between the displayed records and the related SQL.
 
+🚀 Open Live Project
+
+👉 Open University Course Management System Live Project
+
 > Important: GitHub README files do not execute arbitrary HTML/JavaScript. The live UI is therefore provided as `index.html`. It can be opened locally or published with GitHub Pages.
 
 ---
