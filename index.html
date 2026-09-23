@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>University Course Management System</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#697386;--border:#e3e7ef;--accent:#2563eb;--accent2:#eff6ff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.header{padding:28px 34px;background:#fff;border-bottom:1px solid var(--border)}
+.header h1{margin:0 0 7px;font-size:28px}.header p{margin:0;color:var(--muted)}
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 105px)}
+.sidebar{background:#111827;padding:22px 14px}.sidebar h3{color:#fff;margin:4px 12px 18px;font-size:14px;text-transform:uppercase;letter-spacing:1px}
+.nav button{width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:12px 14px;border-radius:9px;margin:3px 0;font-size:14px;cursor:pointer}
+.nav button:hover,.nav button.active{background:#1d4ed8;color:#fff}
+.main{padding:30px;max-width:1250px;width:100%}.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:24px}
+.hero h2{margin:0 0 8px;font-size:25px}.hero p{margin:0;color:var(--muted)}
+.badge{background:var(--accent2);color:var(--accent);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.04)}
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 18px}.tabs button{padding:14px 18px;border:0;background:none;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent}.tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
+.content{padding:20px;overflow:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:13px 14px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}th{background:#f8fafc;font-weight:700}tr:last-child td{border-bottom:0}
+pre{margin:0;background:#0f172a;color:#dbeafe;padding:20px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.65}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--border);padding:16px;border-radius:12px}.stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--muted)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{padding:12px}.nav{display:flex;overflow:auto}.nav button{min-width:145px}.main{padding:18px}.stats{grid-template-columns:repeat(2,1fr)}.hero{display:block}.badge{display:inline-block;margin-top:12px}}
+</style>
+</head>
+<body>
+<header class="header">
+<h1>University Course Management System</h1>
+<p>Interactive SQL Project • Database Structure • Table Data • Query Showcase</p>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<h3>Database Tables</h3>
+<div class="nav" id="nav"></div>
+</aside>
+<main class="main">
+<div class="hero">
+<div><h2 id="title">Departments</h2><p id="desc">Department master data used by courses and instructors.</p></div>
+<div class="badge">Live Project Preview</div>
+</div>
+<div class="stats">
+<div class="stat"><b>5</b><span>Tables</span></div>
+<div class="stat"><b>16</b><span>SQL Questions</span></div>
+<div class="stat"><b>5</b><span>Relationships</span></div>
+<div class="stat"><b>SQL</b><span>Core Technology</span></div>
+<div class="stat"><b>CRUD</b><span>Operations</span></div>
+</div>
+<section class="card">
+<div class="tabs"><button class="active" onclick="showTab('data',this)">Table Data</button><button onclick="showTab('sql',this)">SQL Code</button></div>
+<div class="content" id="content"></div>
+</section>
+</main>
+</div>
+<script>
+const db={
+Departments:{desc:"Department master data used by courses and instructors.",cols:["DepartmentID","DepartmentName"],rows:[[1,"Computer Science"],[2,"Mathematics"]],sql:"SELECT * FROM Departments;"},
+Students:{desc:"Student records containing identity, contact and enrollment information.",cols:["StudentID","FirstName","LastName","Email","DateOfBirth","EnrollmentDate"],rows:[[1,"John","Doe","john.doe@email.com","2000-01-15","2022-08-01"],[2,"Jane","Smith","jane.smith@email.com","1999-05-25","2021-08-01"]],sql:"SELECT * FROM Students;"},
+Courses:{desc:"Course catalog connected to academic departments.",cols:["CourseID","CourseName","DepartmentID","Credits"],rows:[[101,"Introduction to SQL",1,3],[102,"Data Structures",2,4]],sql:"SELECT * FROM Courses;"},
+Instructors:{desc:"Instructor records with department and salary information.",cols:["InstructorID","FirstName","LastName","Email","DepartmentID","Salary"],rows:[[1,"Alice","Johnson","alice.johnson@univ.com",1,"65000.00"],[2,"Bob","Lee","bob.lee@univ.com",2,"60000.00"]],sql:"SELECT * FROM Instructors;"},
+Enrollments:{desc:"Student-to-course enrollment records.",cols:["EnrollmentID","StudentID","CourseID","EnrollmentDate"],rows:[[1,1,101,"2022-08-01"],[2,2,102,"2021-08-01"]],sql:"SELECT * FROM Enrollments;"}
+};
+const nav=document.getElementById("nav");
+Object.keys(db).forEach((name,i)=>{let b=document.createElement("button");b.textContent=name;b.onclick=()=>select(name,b);if(i===0)b.classList.add("active");nav.appendChild(b)});
+function select(name,btn){document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.getElementById("title").textContent=name;document.getElementById("desc").textContent=db[name].desc;renderData(name)}
+function renderData(name){let t=db[name];let h="<table><thead><tr>"+t.cols.map(c=>"<th>"+c+"</th>").join("")+"</tr></thead><tbody>"+t.rows.map(r=>"<tr>"+r.map(v=>"<td>"+v+"</td>").join("")+"</tr>").join("")+"</tbody></table>";document.getElementById("content").innerHTML=h;document.querySelectorAll(".tabs button").forEach((b,i)=>b.classList.toggle("active",i===0))}
+function showTab(type,btn){document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");let name=document.getElementById("title").textContent;if(type==="data")renderData(name);else document.getElementById("content").innerHTML="<pre>"+db[name].sql.replaceAll("&","&amp;").replaceAll("<","&lt;")+"</pre>"}
+renderData("Departments");
+</script>
+</body>
+</html>
