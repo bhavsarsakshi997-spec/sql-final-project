@@ -4,6 +4,9 @@
 
 ---
 
+## Video link:
+https://drive.google.com/file/d/1ysOotTEpZXHKnl7iHU36aWIr7BXp0OBK/view?usp=drive_link
+
 ## 🚀 Live Project Preview
 
 This project includes a standalone `index.html` file.
